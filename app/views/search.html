@@ -1,0 +1,73 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                    <input type="text" class="form-control" ng-model="keywords" ng-change="onQueryChange()">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="col-md-1"><h5>Size</h5></div>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" ng-model="size" ng-change="onQueryChange()" />
+                </div>
+                <div class="col-md-1"><h5>Page</h5></div>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" ng-model="page" ng-change="onQueryChange()" /> / {{searchResult.pages}}
+                </div>
+                <div class="col-md-6">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-primary" ng-click="onPageNav('first')">First</button>
+                        <button type="button" class="btn btn-sm btn-success" ng-click="onPageNav('prev')">Prev</button>
+                        <button type="button" class="btn btn-sm btn-warning" ng-click="onPageNav('next')">Next</button>
+                        <button type="button" class="btn btn-sm btn-danger" ng-click="onPageNav('last')">Last</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        총 {{searchResult.total}} 개의 게시글을 검색하였습니다. 소요 시간은 {{searchResult.took}} ms 입니다.
+    </div>
+</div>
+<hr/>
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <table class="table smallfont">
+                <thead>
+                    <tr>
+                        <th>Module</th>
+                        <th>Article</th>
+                        <th>Title</th>
+                        <th>Content</th>
+                        <th>Author</th>
+                        <th>Regdate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="doc in searchResult.hits">
+                        <td>{{doc._source.module.board_title}}</td>
+                        <td>{{doc._source.article.document_srl}}</td>
+                        <td>
+                            <a ng-href="{{xe + '/index.php?mid=' + doc._source.module.mid + '&document_srl=' + doc._source.article.document_srl}}" target="_blank">
+                                <span ng-if="doc.highlight['article.title']" ng-bind-html="renderHtml(doc.highlight['article.title'][0])"></span>
+                                <span ng-if="!doc.highlight['article.title']">{{doc._source.article.title}}</span>
+                            </a>
+                        </td>
+                        <td>
+                            <ul ng-repeat="highlight in doc.highlight['article.content']">
+                                <li ng-bind-html="renderHtml(highlight)"></li>
+                            </ul>
+                        </td>
+                        <td>{{doc._source.article.nick_name}}</td>
+                        <td>{{doc._source.article.regdate}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
